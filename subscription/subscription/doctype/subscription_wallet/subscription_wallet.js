@@ -1,6 +1,46 @@
 // Copyright (c) 2026, nsdLabs — Nest Software Development and contributors
 // For license information, please see license.txt
 
+function syncGlAccountDetails(frm, accountName, markDirty = true) {
+	if (!accountName) {
+		if (markDirty) {
+			frm.set_value("gl_account_currency", "");
+			frm.set_value("erpnext_gl_balance", 0);
+		}
+		return;
+	}
+
+	frappe.db.get_value("Account", accountName, ["account_currency", "company"]).then((r) => {
+		const acc = (r && r.message) || {};
+		if (markDirty) {
+			if (acc.company && !frm.doc.company) {
+				frm.set_value("company", acc.company);
+			}
+			frm.set_value("gl_account_currency", acc.account_currency || "");
+		} else if (acc.account_currency && frm.doc.gl_account_currency !== acc.account_currency) {
+			frm.doc.gl_account_currency = acc.account_currency;
+			frm.refresh_field("gl_account_currency");
+		}
+	});
+
+	frappe.call({
+		method: "erpnext.accounts.utils.get_balance_on",
+		args: {
+			account: accountName,
+			in_account_currency: 1,
+		},
+		callback(r) {
+			const bal = Number((r && r.message) || 0);
+			if (markDirty) {
+				frm.set_value("erpnext_gl_balance", bal);
+			} else {
+				frm.doc.erpnext_gl_balance = bal;
+				frm.refresh_field("erpnext_gl_balance");
+			}
+		},
+	});
+}
+
 frappe.ui.form.on("Subscription Wallet", {
 	setup(frm) {
 		frm.set_query("bank_account", () => {
@@ -37,45 +77,46 @@ frappe.ui.form.on("Subscription Wallet", {
 
 	erpnext_bank_account(frm) {
 		if (!frm.doc.erpnext_bank_account) return;
-		frappe.call({
-			method: "subscription.subscription.doctype.subscription_wallet.subscription_wallet.fetch_erpnext_account_details",
-			args: {
-				erpnext_bank_account: frm.doc.erpnext_bank_account,
-				bank_account: frm.doc.bank_account || "",
-			},
-			callback(r) {
-				const d = r.message || {};
-				if (d.erpnext_bank && !frm.doc.erpnext_bank) frm.set_value("erpnext_bank", d.erpnext_bank);
-				if (d.bank_account) frm.set_value("bank_account", d.bank_account);
-				if (d.company && !frm.doc.company) frm.set_value("company", d.company);
-				if (d.bank_account_no && !frm.doc.bank_account_no) frm.set_value("bank_account_no", d.bank_account_no);
-				if (d.iban && !frm.doc.iban) frm.set_value("iban", d.iban);
-				frm.set_value("gl_account_currency", d.gl_account_currency || "");
-				frm.set_value("erpnext_gl_balance", d.erpnext_gl_balance || 0);
-			},
-		});
+		frappe.db
+			.get_value("Bank Account", frm.doc.erpnext_bank_account, [
+				"bank",
+				"account",
+				"company",
+				"bank_account_no",
+				"iban",
+			])
+			.then((r) => {
+				const ba = (r && r.message) || {};
+				if (ba.bank && !frm.doc.erpnext_bank) {
+					frm.set_value("erpnext_bank", ba.bank);
+				}
+				if (ba.company && !frm.doc.company) {
+					frm.set_value("company", ba.company);
+				}
+				if (ba.bank_account_no && !frm.doc.bank_account_no) {
+					frm.set_value("bank_account_no", ba.bank_account_no);
+				}
+				if (ba.iban && !frm.doc.iban) {
+					frm.set_value("iban", ba.iban);
+				}
+				if (ba.account) {
+					frm.set_value("bank_account", ba.account);
+				} else if (frm.doc.bank_account) {
+					syncGlAccountDetails(frm, frm.doc.bank_account, true);
+				}
+			});
 	},
 
 	bank_account(frm) {
-		if (!frm.doc.bank_account) {
-			frm.set_value("gl_account_currency", "");
-			frm.set_value("erpnext_gl_balance", 0);
-			return;
-		}
-		frappe.call({
-			method: "subscription.subscription.doctype.subscription_wallet.subscription_wallet.fetch_erpnext_account_details",
-			args: { bank_account: frm.doc.bank_account },
-			callback(r) {
-				const d = r.message || {};
-				if (d.company && !frm.doc.company) frm.set_value("company", d.company);
-				frm.set_value("gl_account_currency", d.gl_account_currency || "");
-				frm.set_value("erpnext_gl_balance", d.erpnext_gl_balance || 0);
-			},
-		});
+		syncGlAccountDetails(frm, frm.doc.bank_account, true);
 	},
 
 	refresh(frm) {
 		if (frm.is_new()) return;
+
+		if (frm.doc.bank_account) {
+			syncGlAccountDetails(frm, frm.doc.bank_account, false);
+		}
 
 		frm.add_custom_button(__("Manual Deposit / Withdrawal"), () => {
 			const d = new frappe.ui.Dialog({
