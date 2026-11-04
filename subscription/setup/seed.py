@@ -48,11 +48,37 @@ def ensure_default_settings() -> None:
 		settings.save()
 
 
+def _norm_choice(val: str | None, allowed: tuple[str, ...], default: str) -> str:
+	v = str(val or "").strip()
+	if v in allowed:
+		return v
+	for opt in allowed:
+		if opt.lower() == v.lower():
+			return opt
+	return default
+
+
+def _norm_email_status(raw_status: str | None) -> str:
+	low = str(raw_status or "").strip().lower()
+	if "fail" in low or "err" in low or "bounce" in low:
+		return "Failed"
+	if "queue" in low or "pend" in low:
+		return "Queued"
+	return "Sent"
+
+
 def import_seed_if_empty() -> None:
-	"""Populate initial dataset only if no Client/Vendor Subscriptions exist yet."""
+	"""Populate initial dataset if empty (or finish idempotently if an earlier install stopped mid-seed)."""
 	if not frappe.db.exists("DocType", "Client Subscription"):
 		return
-	if frappe.db.count("Client Subscription") > 0 or frappe.db.count("Vendor Subscription") > 0:
+	has_clients = frappe.db.count("Client Subscription") > 0
+	has_vendors = frappe.db.count("Vendor Subscription") > 0
+	partial_seed = (
+		has_clients
+		and frappe.db.exists("Client Subscription", {"legacy_id": "jp9l0b9v"})
+		and frappe.db.count("Subscription Email Log") == 0
+	)
+	if (has_clients or has_vendors) and not partial_seed:
 		return
 	seed_path = frappe.get_app_path("subscription", "setup", "data", "nest_subscriptions_full_export.json")
 	if os.path.exists(seed_path):
@@ -122,11 +148,19 @@ def import_workspace_payload(payload: dict, replace: bool = False) -> dict:
 			"legacy_id": leg_id or None,
 			"client_name": (item.get("client") or item.get("client_name") or "").strip(),
 			"service": (item.get("service") or "").strip(),
-			"billing_cycle": item.get("cycle") or item.get("billing_cycle") or "Annual",
-			"currency": (item.get("cur") or item.get("currency") or "USD").upper(),
+			"billing_cycle": _norm_choice(
+				item.get("cycle") or item.get("billing_cycle"),
+				("Monthly", "Quarterly", "Annual", "Biennial"),
+				"Annual",
+			),
+			"currency": _norm_choice(
+				(item.get("cur") or item.get("currency") or "USD").upper(),
+				("USD", "EGP"),
+				"USD",
+			),
 			"amount": flt(item.get("amt") if "amt" in item else item.get("amount")),
 			"next_due_date": getdate(item.get("due") or item.get("next_due_date") or nowdate()),
-			"status": item.get("status") or "Active",
+			"status": _norm_choice(item.get("status"), ("Active", "Paused", "Cancelled"), "Active"),
 			"notes": item.get("notes") or "",
 		}
 		if not values["client_name"] or not values["service"]:
@@ -189,12 +223,24 @@ def import_workspace_payload(payload: dict, replace: bool = False) -> dict:
 			"legacy_id": leg_id or None,
 			"vendor_name": (vitem.get("vendor") or vitem.get("vendor_name") or "").strip(),
 			"service": (vitem.get("service") or "").strip(),
-			"billing_cycle": vitem.get("cycle") or vitem.get("billing_cycle") or "Annual",
-			"currency": (vitem.get("cur") or vitem.get("currency") or "USD").upper(),
+			"billing_cycle": _norm_choice(
+				vitem.get("cycle") or vitem.get("billing_cycle"),
+				("Monthly", "Quarterly", "Annual", "Biennial"),
+				"Annual",
+			),
+			"currency": _norm_choice(
+				(vitem.get("cur") or vitem.get("currency") or "USD").upper(),
+				("USD", "EGP"),
+				"USD",
+			),
 			"amount": flt(vitem.get("amt") if "amt" in vitem else vitem.get("amount")),
 			"next_due_date": getdate(vitem.get("due") or vitem.get("next_due_date") or nowdate()),
-			"status": vitem.get("status") or "Active",
-			"allocation_mode": vitem.get("allocation_mode") or "Equal Split",
+			"status": _norm_choice(vitem.get("status"), ("Active", "Paused", "Cancelled"), "Active"),
+			"allocation_mode": _norm_choice(
+				vitem.get("allocation_mode"),
+				("Equal Split", "Custom Percentage", "Revenue Proportional"),
+				"Equal Split",
+			),
 			"notes": vitem.get("notes") or "",
 			"linked_subscriptions": child_rows,
 		}
@@ -230,7 +276,11 @@ def import_workspace_payload(payload: dict, replace: bool = False) -> dict:
 		w_values = {
 			"legacy_id": leg_id or None,
 			"wallet_name": wname_str,
-			"currency": (witem.get("cur") or witem.get("currency") or "EGP").upper(),
+			"currency": _norm_choice(
+				(witem.get("cur") or witem.get("currency") or "EGP").upper(),
+				("EGP", "USD"),
+				"EGP",
+			),
 			"opening_balance": flt(witem.get("opening") if "opening" in witem else witem.get("opening_balance")),
 			"archived": cint(witem.get("archived")),
 			"notes": witem.get("notes") or "",
@@ -289,7 +339,7 @@ def import_workspace_payload(payload: dict, replace: bool = False) -> dict:
 				"transaction_date": getdate(
 					titem.get("tdate") or titem.get("date") or titem.get("transaction_date") or nowdate()
 				),
-				"direction": (titem.get("direction") or "in").lower(),
+				"direction": _norm_choice((titem.get("direction") or "in").lower(), ("in", "out"), "in"),
 				"wallet": target_wallet,
 				"reference_kind": ref_kind if ref_kind in ("client", "vendor", "manual") else "manual",
 				"client_subscription": c_sub,
@@ -297,7 +347,11 @@ def import_workspace_payload(payload: dict, replace: bool = False) -> dict:
 				"party": titem.get("party") or "",
 				"service": titem.get("service") or "",
 				"amount": flt(titem.get("amount")),
-				"currency": (titem.get("cur") or titem.get("currency") or "EGP").upper(),
+				"currency": _norm_choice(
+					(titem.get("cur") or titem.get("currency") or "EGP").upper(),
+					("EGP", "USD"),
+					"EGP",
+				),
 				"exchange_rate": flt(titem.get("rate") or titem.get("exchange_rate") or settings_doc.usd_egp_rate),
 				"wallet_amount": flt(titem.get("wallet_amount")),
 				"advance_due_date": 0,
@@ -389,7 +443,7 @@ def import_workspace_payload(payload: dict, replace: bool = False) -> dict:
 					"subject": litem.get("subject") or "",
 					"template_used": settings_doc.email_template or "nest",
 					"is_test": cint(litem.get("is_test", 0)),
-					"status": litem.get("status") or "Sent",
+					"status": _norm_email_status(litem.get("status")),
 					"sent_at": litem.get("sent_at") or frappe.utils.now_datetime(),
 				}
 			)

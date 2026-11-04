@@ -62,12 +62,17 @@ def get_public_key() -> str:
 
 
 @frappe.whitelist(methods=["POST"])
-def subscribe(subscription, device_label: str | None = None):
+def subscribe(
+	subscription: str | dict | None = None,
+	subscription_json: str | dict | None = None,
+	device_label: str | None = None,
+):
 	"""Store the browser's PushSubscription for the authenticated user."""
 	if frappe.session.user == "Guest":
 		frappe.throw(_("Authentication required"), frappe.PermissionError)
 
-	sub_data = frappe.parse_json(subscription) or {}
+	raw_sub = subscription if subscription is not None else subscription_json
+	sub_data = frappe.parse_json(raw_sub) if isinstance(raw_sub, str) else (raw_sub or {})
 	endpoint = sub_data.get("endpoint")
 	keys = sub_data.get("keys") or {}
 	if not endpoint or not keys.get("p256dh") or not keys.get("auth"):
@@ -297,6 +302,22 @@ def send_test():
 	)
 	devices = frappe.db.count(PUSH_SUB_DOCTYPE, {"user": frappe.session.user})
 	return {"sent": sent, "devices": devices, "problems": list(dict.fromkeys(problems))}
+
+
+@frappe.whitelist(methods=["POST"])
+def send_test_push():
+	"""Alias used by the Subscription Mobile PWA to record a test alert & trigger Web Push."""
+	if frappe.session.user == "Guest":
+		frappe.throw(_("Authentication required"), frappe.PermissionError)
+	create_user_notification(
+		user=frappe.session.user,
+		title=_("Subscription Alerts Active"),
+		body=_("Push notifications are connected — you will be alerted before subscription renewals expire."),
+		category="System",
+		target_url=f"{APP_ROUTE}/alerts",
+		send_push=False,
+	)
+	return send_test()
 
 
 def _get_target_recipients() -> list[str]:
