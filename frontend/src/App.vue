@@ -33,25 +33,10 @@ async function handleUnlock() {
     <!-- Offline Status Pill -->
     <div
       v-if="!pwa.online"
-      class="bg-warn px-4 py-1.5 text-center text-xs font-bold text-white pt-safe"
+      class="pt-safe sticky top-0 z-[45] bg-warn px-4 py-1.5 text-center text-xs font-bold text-white"
       role="status"
     >
       Offline mode · Viewing cached subscription snapshot
-    </div>
-
-    <!-- Safe Prompt-Driven Service Worker Update Banner -->
-    <div
-      v-if="pwa.updateAvailable"
-      class="flex items-center justify-between gap-3 bg-obsidian-900 px-4 py-2 text-xs text-white"
-    >
-      <span>A new version of Subscription is ready.</span>
-      <button
-        type="button"
-        class="rounded-full bg-coral-500 px-3 py-1 font-bold text-white"
-        @click="applyUpdate"
-      >
-        Reload
-      </button>
     </div>
 
     <!-- Adaptive Desktop Left Rail + Main Viewport -->
@@ -60,6 +45,22 @@ async function handleUnlock() {
 
     <div :class="hasDesktopRail && showChrome ? 'min-[840px]:pl-[236px]' : ''">
       <RouterView />
+    </div>
+
+    <!-- Safe Prompt-Driven Service Worker Update Banner (floating above tab bar like Nest App) -->
+    <div
+      v-if="pwa.updateAvailable"
+      class="fixed inset-x-4 bottom-[calc(env(safe-area-inset-bottom,0px)+5.5rem)] z-[55] mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl bg-obsidian-900 px-4 py-3 text-xs text-white shadow-sheet ring-1 ring-white/15"
+      role="status"
+    >
+      <span>A new version of Subscription is ready.</span>
+      <button
+        type="button"
+        class="shrink-0 rounded-full bg-coral-500 px-3.5 py-1.5 font-bold text-white"
+        @click="applyUpdate"
+      >
+        Reload
+      </button>
     </div>
 
     <!-- Global Sheets -->
@@ -108,7 +109,7 @@ async function handleUnlock() {
     <Teleport to="body">
       <div
         v-if="pwa.locked"
-        class="fixed inset-0 z-[80] flex flex-col items-center justify-center bg-obsidian-950 p-6 text-center text-white"
+        class="pt-safe pb-safe fixed inset-0 z-[80] flex flex-col items-center justify-center bg-obsidian-950 p-6 text-center text-white"
       >
         <img
           src="/assets/subscription/images/subscription-logo-512.png"

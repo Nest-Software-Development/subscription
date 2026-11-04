@@ -55,7 +55,10 @@ async function submitOtp() {
 </script>
 
 <template>
-  <main class="flex min-h-[100dvh] flex-col justify-between bg-obsidian-950 px-5 py-10 text-white pt-safe pb-safe">
+  <main
+    data-dark-screen
+    class="flex min-h-[100dvh] flex-col justify-between bg-obsidian-950 px-5 py-10 text-white pt-safe pb-safe"
+  >
     <div class="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center">
       <!-- Brand Header -->
       <div class="mb-8 flex flex-col items-center text-center">

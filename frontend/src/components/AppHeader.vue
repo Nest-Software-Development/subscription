@@ -1,4 +1,5 @@
 <script setup>
+import { onActivated, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { os } from '@/lib/platform'
 import { store, toggleDisplayCurrency } from '@/lib/store'
@@ -10,9 +11,18 @@ const props = defineProps({
   subtitle: { type: String, default: '' },
   backTo: { type: String, default: '' },
   showCurrencyToggle: { type: Boolean, default: true },
+  flat: { type: Boolean, default: false },
 })
 
 const router = useRouter()
+
+const syncWindowTitle = () => {
+  if (typeof document !== 'undefined') {
+    document.title = props.title ? `${props.title} · Subscription` : 'Subscription'
+  }
+}
+watchEffect(syncWindowTitle)
+onActivated(syncWindowTitle)
 
 function goBack() {
   if (window.history.length > 2) router.back()
@@ -29,8 +39,11 @@ function onBellTap() {
 </script>
 
 <template>
-  <header class="glass-nav sticky top-0 z-30 pt-safe">
-    <div class="mx-auto flex min-h-[56px] max-w-5xl items-center justify-between gap-2 px-4 py-2">
+  <header
+    class="app-bar pt-safe sticky top-0 z-30"
+    :class="flat ? '' : 'border-b border-line/60'"
+  >
+    <div class="mx-auto flex min-h-[62px] max-w-5xl items-center justify-between gap-2 px-4 py-2">
       <!-- Left: Back button on detail screens OR Brand + Title on root tabs -->
       <div class="flex min-w-0 items-center gap-2.5">
         <button

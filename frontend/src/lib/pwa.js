@@ -46,7 +46,23 @@ export function applyTheme(mode = pwa.theme) {
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-color-scheme: dark)').matches
   const isDark = mode === 'dark' || (mode === 'system' && prefersDark)
-  document.documentElement.classList.toggle('dark', isDark)
+  if (typeof document !== 'undefined') {
+    document.documentElement.classList.toggle('dark', isDark)
+    // Match the status bar to the dark launch/login/lock canvas while visible,
+    // and to the app's top bar surface once inside the workspace (same as Nest App).
+    const splash = document.querySelector('[data-splash]')
+    const darkScreen = document.querySelector('[data-dark-screen]')
+    const color =
+      splash || pwa.locked || darkScreen
+        ? '#0B1220'
+        : isDark
+          ? '#121826'
+          : '#FFFFFF'
+    for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+      meta.removeAttribute('media')
+      meta.setAttribute('content', color)
+    }
+  }
 }
 
 function urlBase64ToUint8Array(base64String) {
@@ -100,6 +116,7 @@ export function initPwaListeners() {
       Date.now() - hiddenAt > 60_000
     ) {
       pwa.locked = true
+      applyTheme()
     }
     if (typeof Notification !== 'undefined') {
       pwa.permission = Notification.permission
@@ -365,5 +382,6 @@ export async function unlockAppLock() {
     },
   })
   pwa.locked = false
+  applyTheme()
   return true
 }
