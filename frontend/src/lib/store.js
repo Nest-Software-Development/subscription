@@ -82,6 +82,12 @@ export const store = reactive({
   clientSubscriptions: [],
   vendorSubscriptions: [],
   wallets: [],
+  erpnextBanking: {
+    companies: [],
+    banks: [],
+    bank_accounts: [],
+    gl_accounts: [],
+  },
   transactions: [],
   reminderRules: [],
   emailLogs: [],
@@ -855,6 +861,9 @@ function applyBootstrapPayload(data) {
   store.clientSubscriptions = data.client_subscriptions || []
   store.vendorSubscriptions = data.vendor_subscriptions || []
   store.wallets = data.wallets || []
+  if (data.erpnext_banking) {
+    Object.assign(store.erpnextBanking, data.erpnext_banking)
+  }
   store.transactions = data.transactions || []
   store.reminderRules = data.reminder_rules || []
   store.emailLogs = data.email_logs || []
@@ -1138,7 +1147,14 @@ export async function saveWalletAction(payload) {
     const record = {
       name: payload.name || `WAL-${Math.random().toString(36).slice(2, 7).toUpperCase()}`,
       wallet_name: String(payload.wallet_name || '').trim(),
+      wallet_type: payload.wallet_type || 'Bank',
       currency: String(payload.currency || 'EGP').toUpperCase(),
+      company: payload.company || '',
+      erpnext_bank: payload.erpnext_bank || '',
+      erpnext_bank_account: payload.erpnext_bank_account || '',
+      bank_account: payload.bank_account || '',
+      bank_account_no: payload.bank_account_no || '',
+      iban: payload.iban || '',
       opening_balance: Number(payload.opening_balance || 0),
       archived: Number(payload.archived || 0),
       notes: payload.notes || '',

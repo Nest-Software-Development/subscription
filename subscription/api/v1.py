@@ -25,6 +25,7 @@ from subscription.push import (
 	run_push_renewal_alerts,
 )
 from subscription.setup.seed import import_workspace_payload
+from subscription.subscription.doctype.subscription_wallet.subscription_wallet import get_gl_account_balance
 from subscription.utils import (
 	SETTINGS_DOCTYPE,
 	annualize,
@@ -179,7 +180,17 @@ def get_bootstrap():
 			"name",
 			"legacy_id",
 			"wallet_name",
+			"wallet_type",
 			"currency",
+			"company",
+			"erpnext_bank",
+			"erpnext_bank_account",
+			"bank_account",
+			"mode_of_payment",
+			"bank_account_no",
+			"iban",
+			"gl_account_currency",
+			"erpnext_gl_balance",
 			"opening_balance",
 			"total_in",
 			"total_out",
@@ -191,6 +202,11 @@ def get_bootstrap():
 		order_by="archived asc, wallet_name asc",
 		limit_page_length=100,
 	)
+	for w in wallets:
+		if w.get("bank_account"):
+			w["erpnext_gl_balance"] = get_gl_account_balance(w["bank_account"])
+
+	erpnext_banking = _get_erpnext_banking_options()
 
 	transactions = frappe.get_list(
 		"Subscription Transaction",
@@ -363,6 +379,7 @@ def get_bootstrap():
 		"client_subscriptions": client_subs,
 		"vendor_subscriptions": vendor_subs,
 		"wallets": wallets,
+		"erpnext_banking": erpnext_banking,
 		"transactions": transactions,
 		"reminder_rules": reminder_rules,
 		"email_logs": email_logs,
@@ -532,6 +549,45 @@ def record_payment(payload):
 	}
 
 
+def _get_erpnext_banking_options() -> dict:
+	"""Return ERPNext Companies, Banks, Company Bank Accounts, and Bank/Cash GL Accounts for Wallet linking."""
+	res = {"companies": [], "banks": [], "bank_accounts": [], "gl_accounts": []}
+	try:
+		if frappe.db.exists("DocType", "Company"):
+			res["companies"] = frappe.get_all(
+				"Company",
+				fields=["name", "default_currency"],
+				order_by="name asc",
+				limit_page_length=50,
+			)
+		if frappe.db.exists("DocType", "Bank"):
+			res["banks"] = frappe.get_all(
+				"Bank",
+				fields=["name", "bank_name"],
+				order_by="name asc",
+				limit_page_length=200,
+			)
+		if frappe.db.exists("DocType", "Bank Account"):
+			res["bank_accounts"] = frappe.get_all(
+				"Bank Account",
+				filters={"is_company_account": 1, "disabled": 0},
+				fields=["name", "account_name", "bank", "account", "company", "bank_account_no", "iban"],
+				order_by="name asc",
+				limit_page_length=200,
+			)
+		if frappe.db.exists("DocType", "Account"):
+			res["gl_accounts"] = frappe.get_all(
+				"Account",
+				filters={"is_group": 0, "disabled": 0, "account_type": ["in", ["Bank", "Cash"]]},
+				fields=["name", "account_name", "account_type", "account_currency", "company"],
+				order_by="name asc",
+				limit_page_length=300,
+			)
+	except Exception:
+		pass
+	return res
+
+
 @frappe.whitelist(methods=["POST"])
 def save_wallet(payload):
 	data = frappe.parse_json(payload) or {}
@@ -543,9 +599,21 @@ def save_wallet(payload):
 		_require_perm("Subscription Wallet", "create")
 		doc = frappe.new_doc("Subscription Wallet")
 
-	for field in ("wallet_name", "currency", "bank_account", "notes"):
+	for field in (
+		"wallet_name",
+		"wallet_type",
+		"currency",
+		"company",
+		"erpnext_bank",
+		"erpnext_bank_account",
+		"bank_account",
+		"mode_of_payment",
+		"bank_account_no",
+		"iban",
+		"notes",
+	):
 		if field in data:
-			doc.set(field, data.get(field))
+			doc.set(field, data.get(field) or None if field in ("company", "erpnext_bank", "erpnext_bank_account", "bank_account", "mode_of_payment") else data.get(field))
 	if "opening_balance" in data:
 		doc.opening_balance = flt(data.get("opening_balance"))
 	if "archived" in data:

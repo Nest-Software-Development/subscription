@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "autoname": "naming_series:",
  "creation": "2026-11-04 10:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -7,12 +8,23 @@
   "naming_series",
   "wallet_section",
   "wallet_name",
+  "wallet_type",
   "currency",
-  "bank_account",
   "col_wallet_1",
   "opening_balance",
   "archived",
   "legacy_id",
+  "erpnext_banking_section",
+  "company",
+  "erpnext_bank",
+  "erpnext_bank_account",
+  "bank_account",
+  "col_erp_1",
+  "mode_of_payment",
+  "bank_account_no",
+  "iban",
+  "gl_account_currency",
+  "erpnext_gl_balance",
   "balance_section",
   "total_in",
   "total_out",
@@ -24,13 +36,13 @@
  ],
  "fields": [
   {
+   "default": "WAL-.####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Series",
    "options": "WAL-.####",
-   "default": "WAL-.####",
-   "reqd": 1,
-   "hidden": 1
+   "reqd": 1
   },
   {
    "fieldname": "wallet_section",
@@ -40,51 +52,119 @@
   {
    "fieldname": "wallet_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Wallet / Bank Name",
    "reqd": 1,
-   "unique": 1,
-   "in_list_view": 1
+   "unique": 1
   },
   {
+   "default": "Bank",
+   "fieldname": "wallet_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Wallet Type",
+   "options": "Bank\nCash\nDigital Wallet"
+  },
+  {
+   "default": "EGP",
    "fieldname": "currency",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Wallet Currency",
    "options": "EGP\nUSD",
-   "default": "EGP",
-   "reqd": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "bank_account",
-   "fieldtype": "Link",
-   "label": "ERPNext GL Account (Optional)",
-   "options": "Account"
+   "reqd": 1
   },
   {
    "fieldname": "col_wallet_1",
    "fieldtype": "Column Break"
   },
   {
+   "default": "0",
    "fieldname": "opening_balance",
    "fieldtype": "Float",
    "label": "Opening Balance",
-   "default": "0",
-   "precision": "2",
-   "in_list_view": 1
+   "precision": "2"
   },
   {
+   "default": "0",
    "fieldname": "archived",
    "fieldtype": "Check",
-   "label": "Archived",
-   "default": "0",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "label": "Archived"
   },
   {
    "fieldname": "legacy_id",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Legacy Export ID",
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "description": "Link this Subscription Wallet to an ERPNext Bank, Company Bank Account, or Chart of Accounts (Bank / Cash) GL Account.",
+   "fieldname": "erpnext_banking_section",
+   "fieldtype": "Section Break",
+   "label": "ERPNext Bank & Account Link"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "erpnext_bank",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "ERPNext Bank",
+   "options": "Bank"
+  },
+  {
+   "fieldname": "erpnext_bank_account",
+   "fieldtype": "Link",
+   "label": "ERPNext Bank Account",
+   "options": "Bank Account"
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "ERPNext GL Account (Bank / Cash)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "col_erp_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Default Mode of Payment",
+   "options": "Mode of Payment"
+  },
+  {
+   "fieldname": "bank_account_no",
+   "fieldtype": "Data",
+   "label": "Bank Account Number"
+  },
+  {
+   "fieldname": "iban",
+   "fieldtype": "Data",
+   "label": "IBAN"
+  },
+  {
+   "fieldname": "gl_account_currency",
+   "fieldtype": "Data",
+   "label": "ERPNext GL Currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "erpnext_gl_balance",
+   "fieldtype": "Float",
+   "label": "Live ERPNext GL Balance",
+   "precision": "2",
+   "read_only": 1
   },
   {
    "fieldname": "balance_section",
@@ -94,18 +174,18 @@
   {
    "fieldname": "total_in",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Total Inflows",
    "precision": "2",
-   "read_only": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
    "fieldname": "total_out",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Total Outflows",
    "precision": "2",
-   "read_only": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
    "fieldname": "col_bal_1",
@@ -114,10 +194,10 @@
   {
    "fieldname": "current_balance",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Current Balance",
    "precision": "2",
-   "read_only": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
    "fieldname": "transaction_count",
@@ -136,14 +216,22 @@
    "label": "Notes"
   }
  ],
+ "icon": "wallet",
  "index_web_pages_for_search": 0,
  "issingle": 0,
  "istable": 0,
- "links": [],
- "modified": "2026-11-04 10:00:00.000000",
+ "links": [
+  {
+   "group": "Ledger",
+   "link_doctype": "Subscription Transaction",
+   "link_fieldname": "wallet"
+  }
+ ],
+ "modified": "2026-11-04 12:30:00.000000",
  "modified_by": "Administrator",
  "module": "Subscription",
  "name": "Subscription Wallet",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -195,14 +283,11 @@
    "write": 0
   }
  ],
+ "search_fields": "wallet_name,currency,erpnext_bank,bank_account",
+ "show_title_field_in_link": 1,
  "sort_field": "wallet_name",
  "sort_order": "ASC",
  "states": [],
- "track_changes": 1,
- "autoname": "naming_series:",
- "naming_rule": "By \"Naming Series\" field",
  "title_field": "wallet_name",
- "show_title_field_in_link": 1,
- "search_fields": "wallet_name,currency",
- "icon": "wallet"
+ "track_changes": 1
 }

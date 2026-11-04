@@ -22,12 +22,33 @@ const walletSheetOpen = ref(false)
 const walletForm = reactive({
   name: '',
   wallet_name: '',
+  wallet_type: 'Bank',
   currency: 'EGP',
+  company: '',
+  erpnext_bank: '',
+  erpnext_bank_account: '',
+  bank_account: '',
+  bank_account_no: '',
+  iban: '',
   opening_balance: 0,
   notes: '',
 })
 
 const cur = computed(() => store.displayCurrency)
+
+function onBankAccountSelect() {
+  const ba = (store.erpnextBanking.bank_accounts || []).find(
+    (x) => x.name === walletForm.erpnext_bank_account,
+  )
+  if (!ba) return
+  if (ba.bank && !walletForm.erpnext_bank) walletForm.erpnext_bank = ba.bank
+  if (ba.account) walletForm.bank_account = ba.account
+  if (ba.company && !walletForm.company) walletForm.company = ba.company
+  if (ba.bank_account_no && !walletForm.bank_account_no) {
+    walletForm.bank_account_no = ba.bank_account_no
+  }
+  if (ba.iban && !walletForm.iban) walletForm.iban = ba.iban
+}
 
 const filteredTxns = computed(() =>
   store.transactions.filter((t) => {
@@ -42,7 +63,14 @@ const filteredTxns = computed(() =>
 function openNewWallet(w = null) {
   walletForm.name = w?.name || ''
   walletForm.wallet_name = w?.wallet_name || ''
+  walletForm.wallet_type = w?.wallet_type || 'Bank'
   walletForm.currency = w?.currency || 'EGP'
+  walletForm.company = w?.company || store.erpnextBanking.companies?.[0]?.name || ''
+  walletForm.erpnext_bank = w?.erpnext_bank || ''
+  walletForm.erpnext_bank_account = w?.erpnext_bank_account || ''
+  walletForm.bank_account = w?.bank_account || ''
+  walletForm.bank_account_no = w?.bank_account_no || ''
+  walletForm.iban = w?.iban || ''
   walletForm.opening_balance = w?.opening_balance ?? 0
   walletForm.notes = w?.notes || ''
   walletSheetOpen.value = true
@@ -147,6 +175,21 @@ const reportTabs = [
             <p class="tabular mt-3 text-2xl font-extrabold">
               {{ fmtMoney(w.current_balance, w.currency, { decimals: 2 }) }}
             </p>
+
+            <div
+              v-if="w.erpnext_bank || w.bank_account || w.erpnext_bank_account"
+              class="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-white/75"
+            >
+              <span class="rounded-full bg-white/10 px-2 py-0.5 font-semibold">
+                ERPNext: {{ w.erpnext_bank || w.erpnext_bank_account || w.bank_account }}
+              </span>
+              <span
+                v-if="w.bank_account"
+                class="tabular rounded-full bg-emerald-400/15 px-2 py-0.5 font-semibold text-emerald-200"
+              >
+                GL: {{ fmtMoney(w.erpnext_gl_balance || 0, w.gl_account_currency || w.currency) }}
+              </span>
+            </div>
 
             <div class="mt-3 flex items-center justify-between border-t border-white/10 pt-2.5 text-xs">
               <span class="tabular text-emerald-300">
@@ -480,6 +523,122 @@ const reportTabs = [
                 step="0.01"
                 class="field-input tabular"
               />
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-line/70 pt-3">
+          <p class="mb-2.5 text-xs font-extrabold uppercase tracking-wider text-ink-mute">
+            ERPNext Bank &amp; Chart of Accounts Link
+          </p>
+          <div class="space-y-3">
+            <div class="grid grid-cols-2 gap-2.5">
+              <div class="field-wrap">
+                <label class="field-label">ERPNext Bank</label>
+                <div class="field-box">
+                  <select
+                    v-if="store.erpnextBanking.banks?.length"
+                    v-model="walletForm.erpnext_bank"
+                    class="field-input text-[0.84rem]"
+                  >
+                    <option value="">— Optional —</option>
+                    <option
+                      v-for="b in store.erpnextBanking.banks"
+                      :key="b.name"
+                      :value="b.name"
+                    >
+                      {{ b.bank_name || b.name }}
+                    </option>
+                  </select>
+                  <input
+                    v-else
+                    v-model="walletForm.erpnext_bank"
+                    type="text"
+                    class="field-input text-[0.84rem]"
+                    placeholder="e.g. CIB / Banque Misr"
+                  />
+                </div>
+              </div>
+
+              <div class="field-wrap">
+                <label class="field-label">Company Bank Account</label>
+                <div class="field-box">
+                  <select
+                    v-if="store.erpnextBanking.bank_accounts?.length"
+                    v-model="walletForm.erpnext_bank_account"
+                    class="field-input text-[0.84rem]"
+                    @change="onBankAccountSelect"
+                  >
+                    <option value="">— Optional —</option>
+                    <option
+                      v-for="ba in store.erpnextBanking.bank_accounts"
+                      :key="ba.name"
+                      :value="ba.name"
+                    >
+                      {{ ba.account_name || ba.name }}
+                    </option>
+                  </select>
+                  <input
+                    v-else
+                    v-model="walletForm.erpnext_bank_account"
+                    type="text"
+                    class="field-input text-[0.84rem]"
+                    placeholder="ERPNext Bank Account"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <label class="field-label">ERPNext GL Account (Bank / Cash)</label>
+              <div class="field-box">
+                <select
+                  v-if="store.erpnextBanking.gl_accounts?.length"
+                  v-model="walletForm.bank_account"
+                  class="field-input text-[0.84rem]"
+                >
+                  <option value="">— Link Chart of Accounts Ledger —</option>
+                  <option
+                    v-for="acc in store.erpnextBanking.gl_accounts"
+                    :key="acc.name"
+                    :value="acc.name"
+                  >
+                    {{ acc.name }} ({{ acc.account_currency || 'EGP' }})
+                  </option>
+                </select>
+                <input
+                  v-else
+                  v-model="walletForm.bank_account"
+                  type="text"
+                  class="field-input text-[0.84rem]"
+                  placeholder="e.g. 1200 - CIB Bank - NSD"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <div class="field-wrap">
+                <label class="field-label">Account Number</label>
+                <div class="field-box">
+                  <input
+                    v-model="walletForm.bank_account_no"
+                    type="text"
+                    class="field-input tabular text-[0.82rem]"
+                    placeholder="Account No."
+                  />
+                </div>
+              </div>
+              <div class="field-wrap">
+                <label class="field-label">IBAN</label>
+                <div class="field-box">
+                  <input
+                    v-model="walletForm.iban"
+                    type="text"
+                    class="field-input tabular text-[0.82rem]"
+                    placeholder="EG..."
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

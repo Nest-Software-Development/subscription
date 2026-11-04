@@ -36,14 +36,36 @@ def sync_desk_navigation() -> None:
 			except Exception:
 				frappe.log_error(frappe.get_traceback(), f"Subscription Nav Sync ({dt})")
 
-	# Remove stale auto-generated user Dock overrides created before standard Dock existed
+	# Remove or upgrade stale auto-generated Dock rows that still point to Module instead of Sidebar
 	if frappe.db.exists("DocType", "Dock"):
-		for dname in frappe.get_all("Dock", filters={"app": "subscription", "standard": 0}, pluck="name"):
+		for drow in frappe.get_all("Dock", filters={"app": "subscription"}, fields=["name", "standard"]):
 			try:
-				ddoc = frappe.get_doc("Dock", dname)
-				icons = {getattr(it, "icon", "") for it in (ddoc.get("items") or [])}
-				if not (icons & {"subscription-soft", "subscription-setup-soft"}):
-					frappe.delete_doc("Dock", dname, ignore_permissions=True, force=True)
+				ddoc = frappe.get_doc("Dock", drow.name)
+				items = ddoc.get("items") or []
+				icons = {getattr(it, "icon", "") for it in items}
+				has_module_fallback = any(getattr(it, "link_type", "") == "Module" for it in items)
+				if not drow.standard and (has_module_fallback or not (icons & {"subscription-soft", "subscription-setup-soft"})):
+					frappe.delete_doc("Dock", drow.name, ignore_permissions=True, force=True)
+				elif drow.standard and has_module_fallback:
+					ddoc.set(
+						"items",
+						[
+							{
+								"icon": "subscription-soft",
+								"link_to": "Subscription",
+								"link_type": "Sidebar",
+								"title": "Subscription",
+							},
+							{
+								"icon": "subscription-setup-soft",
+								"link_to": "Subscription Setup",
+								"link_type": "Sidebar",
+								"title": "Subscription Setup",
+							},
+						],
+					)
+					ddoc.flags.ignore_permissions = True
+					ddoc.save()
 			except Exception:
 				pass
 
@@ -61,6 +83,12 @@ def sync_desk_navigation() -> None:
 					frappe.delete_doc("Sidebar", sname, ignore_permissions=True, force=True)
 			except Exception:
 				pass
+
+	if hasattr(frappe, "clear_cache"):
+		try:
+			frappe.clear_cache()
+		except Exception:
+			pass
 
 
 def after_install():
