@@ -9,6 +9,32 @@ from subscription.push import ensure_vapid_keys
 from subscription.setup.seed import ensure_default_settings, import_seed_if_empty
 
 
+def force_reload_subscription_doctypes() -> None:
+	"""Force-reload Subscription DocTypes and bump `tabDocType.modified` so browser
+	`localforage` (IndexedDB) immediately evicts any cached client script (`__js`) or schema."""
+	if not hasattr(frappe, "reload_doc"):
+		return
+	doctypes = (
+		("Subscription Wallet", "subscription_wallet"),
+		("Client Subscription", "client_subscription"),
+		("Vendor Subscription", "vendor_subscription"),
+		("Subscription Transaction", "subscription_transaction"),
+		("Subscription Settings", "subscription_settings"),
+		("Subscription Reminder Rule", "subscription_reminder_rule"),
+	)
+	now_ts = frappe.utils.now_datetime()
+	for dt_name, dt_slug in doctypes:
+		if not frappe.db.exists("DocType", dt_name):
+			continue
+		try:
+			frappe.reload_doc("subscription", "doctype", dt_slug, force=True)
+			frappe.db.set_value("DocType", dt_name, "modified", now_ts, update_modified=False)
+			if hasattr(frappe, "clear_cache"):
+				frappe.clear_cache(doctype=dt_name)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), f"Subscription DocType Reload ({dt_name})")
+
+
 def sync_desk_navigation() -> None:
 	"""Ensure Frappe v16 Sidebar, Dock, Desktop Icon, and Workspace Sidebar JSONs are imported
 	with their Lucide & dual-tone icons, and purge any pre-existing placeholder overrides."""
@@ -93,6 +119,7 @@ def sync_desk_navigation() -> None:
 
 def after_install():
 	"""Idempotent setup executed after `bench install-app subscription` and every `bench migrate`."""
+	force_reload_subscription_doctypes()
 	sync_desk_navigation()
 	ensure_default_settings()
 	ensure_vapid_keys()

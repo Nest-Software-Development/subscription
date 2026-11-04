@@ -84,7 +84,7 @@ frappe.ui.form.on("Subscription Wallet", {
 					{
 						fieldname: "direction",
 						fieldtype: "Select",
-						options: "in\nout",
+						options: ["in", "out"],
 						label: __("Direction (in / out)"),
 						default: "in",
 						reqd: 1,
@@ -117,7 +117,7 @@ frappe.ui.form.on("Subscription Wallet", {
 					{
 						fieldname: "currency",
 						fieldtype: "Select",
-						options: "EGP\nUSD",
+						options: ["EGP", "USD"],
 						label: __("Currency"),
 						default: frm.doc.currency,
 						reqd: 1,
