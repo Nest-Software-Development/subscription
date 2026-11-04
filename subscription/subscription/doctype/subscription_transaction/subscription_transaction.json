@@ -265,5 +265,6 @@
  "naming_rule": "By \"Naming Series\" field",
  "title_field": "party",
  "show_title_field_in_link": 1,
- "search_fields": "party,service,wallet,reference_kind"
+ "search_fields": "party,service,wallet,reference_kind",
+ "icon": "arrow-left-right"
 }

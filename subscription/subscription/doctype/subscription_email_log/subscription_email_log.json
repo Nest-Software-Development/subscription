@@ -172,5 +172,6 @@
  "naming_rule": "By \"Naming Series\" field",
  "title_field": "client_name",
  "show_title_field_in_link": 1,
- "search_fields": "client_name,service,recipients,subject"
+ "search_fields": "client_name,service,recipients,subject",
+ "icon": "mail-check"
 }

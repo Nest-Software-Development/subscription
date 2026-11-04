@@ -153,5 +153,6 @@
  "naming_rule": "By \"Naming Series\" field",
  "title_field": "client_name",
  "show_title_field_in_link": 1,
- "search_fields": "client_name,to_emails"
+ "search_fields": "client_name,to_emails",
+ "icon": "calendar-clock"
 }

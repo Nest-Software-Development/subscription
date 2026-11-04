@@ -11,6 +11,7 @@ app_description = (
 app_email = "info@nsd-eg.com"
 app_license = "mit"
 app_logo_url = "/assets/subscription/images/logo.png"
+app_home = "/desk/subscription"
 
 required_apps = ["frappe", "erpnext"]
 
@@ -23,7 +24,7 @@ add_to_apps_screen = [
 		"name": "subscription",
 		"logo": "/assets/subscription/images/logo.png",
 		"title": "Subscription",
-		"route": "/desk/subscription",
+		"route": app_home,
 		"has_permission": "subscription.api.pwa.check_app_permission",
 	}
 ]

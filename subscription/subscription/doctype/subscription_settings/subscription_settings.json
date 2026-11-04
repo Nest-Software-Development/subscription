@@ -116,7 +116,7 @@
    "fieldname": "email_footer",
    "fieldtype": "Small Text",
    "label": "Email Footer Line",
-   "default": "Nest Software Development · Alexandria, Egypt · nsd-eg.com"
+   "default": "Nest Software Development \u00b7 Alexandria, Egypt \u00b7 nsd-eg.com"
   },
   {
    "fieldname": "wording_section",
@@ -128,7 +128,7 @@
    "fieldname": "tx_subject",
    "fieldtype": "Data",
    "label": "Email Subject Template",
-   "default": "Upcoming renewal: {service} — due {due}"
+   "default": "Upcoming renewal: {service} \u2014 due {due}"
   },
   {
    "fieldname": "tx_greeting",
@@ -150,7 +150,7 @@
    "fieldname": "tx_closing",
    "fieldtype": "Small Text",
    "label": "Closing Paragraph",
-   "default": "To ensure uninterrupted service, please arrange payment on or before the due date. If payment has already been sent, kindly disregard this message — and thank you."
+   "default": "To ensure uninterrupted service, please arrange payment on or before the due date. If payment has already been sent, kindly disregard this message \u2014 and thank you."
   },
   {
    "fieldname": "tx_cta",
@@ -246,5 +246,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "icon": "settings"
 }

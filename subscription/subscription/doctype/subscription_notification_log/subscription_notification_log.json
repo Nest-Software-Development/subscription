@@ -147,5 +147,6 @@
  "naming_rule": "By \"Naming Series\" field",
  "title_field": "title",
  "show_title_field_in_link": 1,
- "search_fields": "recipient,title,category,reference_name"
+ "search_fields": "recipient,title,category,reference_name",
+ "icon": "bell-ring"
 }

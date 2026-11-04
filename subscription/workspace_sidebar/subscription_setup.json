@@ -1,0 +1,101 @@
+{
+ "app": "subscription",
+ "creation": "2026-11-04 10:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "header_icon": "subscription-setup-duotone",
+ "idx": 0,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "settings",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Subscription Settings",
+   "link_to": "Subscription Settings",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "calendar-clock",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Reminder Rules",
+   "link_to": "Subscription Reminder Rule",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "wallet",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Subscription Wallets",
+   "link_to": "Subscription Wallet",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "mail-check",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Email Delivery Log",
+   "link_to": "Subscription Email Log",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "bell-ring",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Push & Alert Log",
+   "link_to": "Subscription Notification Log",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "tablet-smartphone",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Push Devices",
+   "link_to": "Subscription Push Subscription",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "smartphone",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Open Mobile PWA",
+   "link_type": "URL",
+   "show_arrow": 0,
+   "type": "Link",
+   "url": "/subscriptions"
+  }
+ ],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Subscription",
+ "name": "Subscription Setup",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "Subscription Setup"
+}

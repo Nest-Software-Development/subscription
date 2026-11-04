@@ -294,5 +294,6 @@
  "naming_rule": "By \"Naming Series\" field",
  "title_field": "vendor_name",
  "show_title_field_in_link": 1,
- "search_fields": "vendor_name,service,billing_cycle,currency"
+ "search_fields": "vendor_name,service,billing_cycle,currency",
+ "icon": "server"
 }

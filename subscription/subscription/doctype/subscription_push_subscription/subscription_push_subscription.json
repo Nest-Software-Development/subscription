@@ -106,5 +106,6 @@
  "naming_rule": "By fieldname",
  "title_field": "device_label",
  "show_title_field_in_link": 1,
- "search_fields": "user,device_label,user_agent"
+ "search_fields": "user,device_label,user_agent",
+ "icon": "tablet-smartphone"
 }
