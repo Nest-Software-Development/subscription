@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <title>Subscription</title>
+    <meta
+      name="description"
+      content="Recurring client & vendor subscription management, multi-client cost allocation, wallets, and renewal push notifications."
+    />
+    <meta name="theme-color" content="#F5F6F8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Subscription" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- Rendered per request by Frappe (subscription/www/subscriptions.py) -->
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta name="site-name" content="{{ site_name }}" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/assets/subscription/manifest/favicon-64.png" />
+    <link rel="icon" type="image/png" sizes="196x196" href="/assets/subscription/manifest/favicon-196.png" />
+    <link rel="apple-touch-icon" href="/assets/subscription/manifest/apple-touch-icon.png" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/assets/subscription/manifest/splash-1320x2868.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <!-- Instant Launch Screen: class-only selectors so Jinja never mistakes `{` + `#` for a comment -->
+    <style>
+      html {
+        background: #f5f6f8;
+      }
+      @media (prefers-color-scheme: dark) {
+        html {
+          background: #0b1220;
+        }
+      }
+      .sub-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: radial-gradient(125% 90% at 50% 36%, #182338 0%, #0b1220 55%, #060a13 100%);
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+        transition: opacity 0.42s ease, visibility 0s linear 0.42s;
+      }
+      .sub-splash-out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .sub-splash-glow {
+        position: absolute;
+        width: 68vmax;
+        height: 68vmax;
+        top: 12%;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(255, 87, 87, 0.34), rgba(255, 87, 87, 0));
+        filter: blur(36px);
+      }
+      .sub-splash-center {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: -4vh;
+      }
+      .sub-splash-tile {
+        width: 96px;
+        height: 96px;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 22px 48px -12px rgba(255, 87, 87, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.14);
+        animation: sub-rise 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .sub-splash-tile img {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .sub-splash-title {
+        margin: 22px 0 4px;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .sub-splash-sub {
+        margin: 0;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.65);
+        letter-spacing: 0.02em;
+      }
+      .sub-splash-by {
+        position: absolute;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 28px);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      @keyframes sub-rise {
+        from {
+          opacity: 0;
+          transform: translateY(14px) scale(0.88);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .sub-splash-tile {
+          animation: none;
+        }
+      }
+    </style>
+    <script>
+      try {
+        var savedTheme = localStorage.getItem('subscription:theme')
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+          document.documentElement.classList.add('dark')
+        }
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="/assets/subscription/frontend/assets/index-D8R8sZmV.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/subscription/frontend/assets/index-AFitwCUI.css">
+  <link rel="manifest" href="/assets/subscription/frontend/manifest.webmanifest"></head>
+  <body>
+    <div class="sub-splash" data-splash role="status" aria-label="Subscription is loading">
+      <div class="sub-splash-glow"></div>
+      <div class="sub-splash-center" aria-hidden="true">
+        <div class="sub-splash-tile">
+          <img src="/assets/subscription/images/subscription-logo-512.png" alt="" width="96" height="96" />
+        </div>
+        <p class="sub-splash-title">Subscription</p>
+        <p class="sub-splash-sub">Recurring Revenue &amp; Renewal Intelligence</p>
+      </div>
+      <p class="sub-splash-by" aria-hidden="true">nsdLabs · Nest Software Development</p>
+    </div>
+    <div id="app"></div>
+    <script id="subscription-boot" type="application/json">{{ boot_json | safe }}</script>
+  </body>
+</html>

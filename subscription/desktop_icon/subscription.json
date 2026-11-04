@@ -1,0 +1,19 @@
+{
+ "app": "subscription",
+ "creation": "2026-11-04 10:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_type": "App",
+ "idx": 25,
+ "label": "Subscription",
+ "link": "/desk/subscription",
+ "link_type": "External",
+ "logo_url": "/assets/subscription/images/logo.png",
+ "modified": "2026-11-04 10:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "Subscription",
+ "owner": "Administrator",
+ "roles": [],
+ "standard": 1
+}

@@ -1,0 +1,207 @@
+{
+ "actions": [],
+ "creation": "2026-11-04 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "wallet_section",
+  "wallet_name",
+  "currency",
+  "bank_account",
+  "col_wallet_1",
+  "opening_balance",
+  "archived",
+  "legacy_id",
+  "balance_section",
+  "total_in",
+  "total_out",
+  "col_bal_1",
+  "current_balance",
+  "transaction_count",
+  "notes_section",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "WAL-.####",
+   "default": "WAL-.####",
+   "reqd": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "wallet_section",
+   "fieldtype": "Section Break",
+   "label": "Bank / Cash Wallet"
+  },
+  {
+   "fieldname": "wallet_name",
+   "fieldtype": "Data",
+   "label": "Wallet / Bank Name",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Select",
+   "label": "Wallet Currency",
+   "options": "EGP\nUSD",
+   "default": "EGP",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Link",
+   "label": "ERPNext GL Account (Optional)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "col_wallet_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "opening_balance",
+   "fieldtype": "Float",
+   "label": "Opening Balance",
+   "default": "0",
+   "precision": "2",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "archived",
+   "fieldtype": "Check",
+   "label": "Archived",
+   "default": "0",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "legacy_id",
+   "fieldtype": "Data",
+   "label": "Legacy Export ID",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "balance_section",
+   "fieldtype": "Section Break",
+   "label": "Computed Ledger Balances"
+  },
+  {
+   "fieldname": "total_in",
+   "fieldtype": "Float",
+   "label": "Total Inflows",
+   "precision": "2",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "total_out",
+   "fieldtype": "Float",
+   "label": "Total Outflows",
+   "precision": "2",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "col_bal_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "current_balance",
+   "fieldtype": "Float",
+   "label": "Current Balance",
+   "precision": "2",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "transaction_count",
+   "fieldtype": "Int",
+   "label": "Transactions Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 0,
+ "istable": 0,
+ "links": [],
+ "modified": "2026-11-04 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Subscription",
+ "name": "Subscription Wallet",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 0,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "sort_field": "wallet_name",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "naming_series:",
+ "naming_rule": "By \"Naming Series\" field",
+ "title_field": "wallet_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "wallet_name,currency"
+}

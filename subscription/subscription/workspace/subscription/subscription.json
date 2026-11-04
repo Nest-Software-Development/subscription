@@ -1,0 +1,102 @@
+{
+ "app": "subscription",
+ "charts": [
+  {
+   "chart_name": "Subscriptions by Billing Cycle",
+   "label": "Subscriptions by Billing Cycle"
+  }
+ ],
+ "content": "[{\"id\": \"subcard01\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Client Subscriptions\", \"col\": 3}}, {\"id\": \"subcard02\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Vendor Subscriptions\", \"col\": 3}}, {\"id\": \"subcard03\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Renewals Due Within 30 Days\", \"col\": 3}}, {\"id\": \"subcard04\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Emails Sent This Month\", \"col\": 3}}, {\"id\": \"subchart1\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Subscriptions by Billing Cycle\", \"col\": 12}}, {\"id\": \"subspace1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"subhead01\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Operations & Mobile PWA</b></span>\", \"col\": 12}}, {\"id\": \"subshort1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Open Mobile PWA\", \"col\": 3}}, {\"id\": \"subshort2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Client Subscriptions\", \"col\": 3}}, {\"id\": \"subshort3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vendor Subscriptions\", \"col\": 3}}, {\"id\": \"subshort4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Subscription Wallets\", \"col\": 3}}, {\"id\": \"subshort5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Ledger Transactions\", \"col\": 3}}, {\"id\": \"subshort6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Customer Reminder Rules\", \"col\": 3}}, {\"id\": \"subshort7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cost & Profit by Service\", \"col\": 3}}, {\"id\": \"subshort8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Subscription Settings\", \"col\": 3}}]",
+ "creation": "2026-11-04 10:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "refresh-cw",
+ "idx": 0,
+ "indicator_color": "red",
+ "is_hidden": 0,
+ "label": "Subscription",
+ "links": [],
+ "modified": "2026-11-04 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Subscription",
+ "name": "Subscription",
+ "number_cards": [
+  {
+   "label": "Active Client Subscriptions",
+   "number_card_name": "Active Client Subscriptions"
+  },
+  {
+   "label": "Active Vendor Subscriptions",
+   "number_card_name": "Active Vendor Subscriptions"
+  },
+  {
+   "label": "Renewals Due Within 30 Days",
+   "number_card_name": "Renewals Due Within 30 Days"
+  },
+  {
+   "label": "Emails Sent This Month",
+   "number_card_name": "Emails Sent This Month"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 25.0,
+ "shortcuts": [
+  {
+   "label": "Open Mobile PWA",
+   "type": "URL",
+   "color": "Red",
+   "url": "/subscriptions"
+  },
+  {
+   "label": "Client Subscriptions",
+   "type": "DocType",
+   "color": "Green",
+   "link_to": "Client Subscription"
+  },
+  {
+   "label": "Vendor Subscriptions",
+   "type": "DocType",
+   "color": "Blue",
+   "link_to": "Vendor Subscription"
+  },
+  {
+   "label": "Subscription Wallets",
+   "type": "DocType",
+   "color": "Grey",
+   "link_to": "Subscription Wallet"
+  },
+  {
+   "label": "Ledger Transactions",
+   "type": "DocType",
+   "color": "Grey",
+   "link_to": "Subscription Transaction"
+  },
+  {
+   "label": "Customer Reminder Rules",
+   "type": "DocType",
+   "color": "Orange",
+   "link_to": "Subscription Reminder Rule"
+  },
+  {
+   "label": "Cost & Profit by Service",
+   "type": "Report",
+   "color": "Cyan",
+   "link_to": "Cost and Profit by Service"
+  },
+  {
+   "label": "Subscription Settings",
+   "type": "DocType",
+   "color": "Grey",
+   "link_to": "Subscription Settings"
+  }
+ ],
+ "title": "Subscription",
+ "type": "Workspace"
+}

@@ -1,0 +1,176 @@
+{
+ "actions": [],
+ "creation": "2026-11-04 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "client_subscription",
+  "client_name",
+  "service",
+  "due_date",
+  "days_before",
+  "col_elog_1",
+  "status",
+  "is_test",
+  "template_used",
+  "sent_at",
+  "stage_key",
+  "details_section",
+  "subject",
+  "recipients",
+  "cc_recipients",
+  "error_message"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "SELOG-.YYYY.-.#####",
+   "default": "SELOG-.YYYY.-.#####",
+   "reqd": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "client_subscription",
+   "fieldtype": "Link",
+   "label": "Client Subscription",
+   "options": "Client Subscription",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "client_name",
+   "fieldtype": "Data",
+   "label": "Client Name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "service",
+   "fieldtype": "Data",
+   "label": "Service",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Renewal Due Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "days_before",
+   "fieldtype": "Int",
+   "label": "Days Before",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "col_elog_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Sent\nQueued\nFailed",
+   "default": "Sent",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "is_test",
+   "fieldtype": "Check",
+   "label": "Test Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "template_used",
+   "fieldtype": "Data",
+   "label": "Template",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sent_at",
+   "fieldtype": "Datetime",
+   "label": "Sent At",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "stage_key",
+   "fieldtype": "Data",
+   "label": "Deduplication Stage Key",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Delivery Details"
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject",
+   "read_only": 1
+  },
+  {
+   "fieldname": "recipients",
+   "fieldtype": "Small Text",
+   "label": "Recipients",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cc_recipients",
+   "fieldtype": "Small Text",
+   "label": "CC Recipients",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Small Text",
+   "label": "Error Message",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 0,
+ "istable": 0,
+ "links": [],
+ "modified": "2026-11-04 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Subscription",
+ "name": "Subscription Email Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "delete": 1,
+   "export": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "export": 1,
+   "report": 1,
+   "role": "Accounts Manager"
+  },
+  {
+   "read": 1,
+   "role": "Accounts User"
+  }
+ ],
+ "sort_field": "sent_at",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "naming_series:",
+ "naming_rule": "By \"Naming Series\" field",
+ "title_field": "client_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "client_name,service,recipients,subject"
+}

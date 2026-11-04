@@ -1,0 +1,250 @@
+{
+ "actions": [],
+ "creation": "2026-11-04 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "currency_section",
+  "usd_egp_rate",
+  "default_currency",
+  "col_curr_1",
+  "auto_create_erpnext_parties",
+  "email_section",
+  "enable_email_reminders",
+  "email_account",
+  "from_name",
+  "reply_to",
+  "col_email_1",
+  "email_template",
+  "signature_image",
+  "email_footer",
+  "wording_section",
+  "tx_subject",
+  "tx_greeting",
+  "tx_intro",
+  "col_wording_1",
+  "tx_closing",
+  "tx_cta",
+  "tx_signoff",
+  "push_section",
+  "enable_push_notifications",
+  "notify_client_renewals",
+  "notify_vendor_renewals",
+  "push_reminder_offsets",
+  "col_push_1",
+  "vapid_subject",
+  "vapid_public_key",
+  "vapid_private_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "currency_section",
+   "fieldtype": "Section Break",
+   "label": "Currency & ERPNext Integration"
+  },
+  {
+   "fieldname": "usd_egp_rate",
+   "fieldtype": "Float",
+   "label": "USD to EGP Rate (1 USD = ? EGP)",
+   "default": "56.25",
+   "precision": "4",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_currency",
+   "fieldtype": "Select",
+   "label": "Default Display Currency",
+   "options": "USD\nEGP",
+   "default": "USD"
+  },
+  {
+   "fieldname": "col_curr_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "auto_create_erpnext_parties",
+   "fieldtype": "Check",
+   "label": "Auto-Link / Create ERPNext Customer & Supplier",
+   "default": "1"
+  },
+  {
+   "fieldname": "email_section",
+   "fieldtype": "Section Break",
+   "label": "Automated Renewal Email Alerts"
+  },
+  {
+   "fieldname": "enable_email_reminders",
+   "fieldtype": "Check",
+   "label": "Enable Daily Renewal Emails",
+   "default": "1"
+  },
+  {
+   "fieldname": "email_account",
+   "fieldtype": "Link",
+   "label": "Email Account (Optional Override)",
+   "options": "Email Account"
+  },
+  {
+   "fieldname": "from_name",
+   "fieldtype": "Data",
+   "label": "Sender Display Name",
+   "default": "Nest Software Development"
+  },
+  {
+   "fieldname": "reply_to",
+   "fieldtype": "Data",
+   "label": "Reply-To Email",
+   "default": "info@nsd-eg.com"
+  },
+  {
+   "fieldname": "col_email_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "email_template",
+   "fieldtype": "Select",
+   "label": "Email Layout Template",
+   "options": "nest\nmodern\nminimal",
+   "default": "nest"
+  },
+  {
+   "fieldname": "signature_image",
+   "fieldtype": "Attach Image",
+   "label": "Signature Image (Optional)"
+  },
+  {
+   "fieldname": "email_footer",
+   "fieldtype": "Small Text",
+   "label": "Email Footer Line",
+   "default": "Nest Software Development · Alexandria, Egypt · nsd-eg.com"
+  },
+  {
+   "fieldname": "wording_section",
+   "fieldtype": "Section Break",
+   "label": "Email Wording & Tokens ({client}, {service}, {amount}, {due}, {when}, {days}, {cycle})",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "tx_subject",
+   "fieldtype": "Data",
+   "label": "Email Subject Template",
+   "default": "Upcoming renewal: {service} — due {due}"
+  },
+  {
+   "fieldname": "tx_greeting",
+   "fieldtype": "Data",
+   "label": "Greeting Line",
+   "default": "Dear {client} team,"
+  },
+  {
+   "fieldname": "tx_intro",
+   "fieldtype": "Small Text",
+   "label": "Opening Paragraph",
+   "default": "We hope you are doing well. This is a friendly reminder from Nest Software Development that your subscription below is scheduled to renew {when}."
+  },
+  {
+   "fieldname": "col_wording_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tx_closing",
+   "fieldtype": "Small Text",
+   "label": "Closing Paragraph",
+   "default": "To ensure uninterrupted service, please arrange payment on or before the due date. If payment has already been sent, kindly disregard this message — and thank you."
+  },
+  {
+   "fieldname": "tx_cta",
+   "fieldtype": "Data",
+   "label": "Action Button Label",
+   "default": "Reply to confirm payment"
+  },
+  {
+   "fieldname": "tx_signoff",
+   "fieldtype": "Small Text",
+   "label": "Sign-Off Lines",
+   "default": "Warm regards,\nAccounts & Renewals"
+  },
+  {
+   "fieldname": "push_section",
+   "fieldtype": "Section Break",
+   "label": "Mobile PWA & Web Push Notifications"
+  },
+  {
+   "fieldname": "enable_push_notifications",
+   "fieldtype": "Check",
+   "label": "Enable Mobile & Browser Push Alerts",
+   "default": "1"
+  },
+  {
+   "fieldname": "notify_client_renewals",
+   "fieldtype": "Check",
+   "label": "Notify on Upcoming Client Renewals",
+   "default": "1"
+  },
+  {
+   "fieldname": "notify_vendor_renewals",
+   "fieldtype": "Check",
+   "label": "Notify on Upcoming Vendor Renewals",
+   "default": "1"
+  },
+  {
+   "fieldname": "push_reminder_offsets",
+   "fieldtype": "Data",
+   "label": "Push Reminder Lead Days (comma-separated)",
+   "default": "30, 15, 7, 3, 1, 0"
+  },
+  {
+   "fieldname": "col_push_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vapid_subject",
+   "fieldtype": "Data",
+   "label": "VAPID Contact Subject",
+   "default": "mailto:info@nsd-eg.com"
+  },
+  {
+   "fieldname": "vapid_public_key",
+   "fieldtype": "Data",
+   "label": "Web Push Public Key (VAPID)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vapid_private_key",
+   "fieldtype": "Password",
+   "label": "Web Push Private Key (VAPID)",
+   "hidden": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "istable": 0,
+ "links": [],
+ "modified": "2026-11-04 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Subscription",
+ "name": "Subscription Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "System Manager"
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "Accounts Manager"
+  },
+  {
+   "read": 1,
+   "role": "Accounts User"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

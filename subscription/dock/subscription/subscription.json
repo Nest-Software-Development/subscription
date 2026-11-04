@@ -1,0 +1,23 @@
+{
+ "app": "subscription",
+ "creation": "2026-11-04 10:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Dock",
+ "idx": 0,
+ "items": [
+  {
+   "added": 0,
+   "hidden": 0,
+   "icon": "subscription-soft",
+   "link_to": "Subscription",
+   "link_type": "Sidebar",
+   "title": "Subscription"
+  }
+ ],
+ "modified": "2026-11-04 10:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "subscription",
+ "owner": "Administrator",
+ "standard": 1,
+ "user": ""
+}
