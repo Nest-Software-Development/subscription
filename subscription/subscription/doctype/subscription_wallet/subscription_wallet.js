@@ -24,19 +24,23 @@ function syncGlAccountDetails(frm, accountName, markDirty = true) {
 	});
 
 	frappe.call({
-		method: "erpnext.accounts.utils.get_balance_on",
+		method: "subscription.subscription.doctype.subscription_wallet.subscription_wallet.fetch_erpnext_account_details",
 		args: {
-			account: accountName,
-			in_account_currency: 1,
+			bank_account: accountName,
 		},
+		silent: true,
 		callback(r) {
-			const bal = Number((r && r.message) || 0);
+			const d = (r && r.message) || {};
+			const bal = Number(d.erpnext_gl_balance || 0);
 			if (markDirty) {
 				frm.set_value("erpnext_gl_balance", bal);
 			} else {
 				frm.doc.erpnext_gl_balance = bal;
 				frm.refresh_field("erpnext_gl_balance");
 			}
+		},
+		error() {
+			// Server validate/onload also computes erpnext_gl_balance on save
 		},
 	});
 }

@@ -143,6 +143,7 @@ def fetch_erpnext_account_details(
 	bank_account: str | None = None,
 ) -> dict:
 	"""Whitelisted helper for instant Desk & PWA auto-fill when linking ERPNext Bank Account or GL Account."""
+	frappe.has_permission("Subscription Wallet", "read", throw=True)
 	result = {
 		"erpnext_bank": "",
 		"bank_account": bank_account or "",
