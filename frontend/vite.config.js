@@ -33,7 +33,6 @@ export default defineConfig(({ command }) => ({
         start_url: '/subscriptions',
         scope: '/subscriptions',
         display: 'standalone',
-        display_override: ['window-controls-overlay', 'standalone'],
         orientation: 'any',
         launch_handler: { client_mode: ['navigate-existing', 'auto'] },
         background_color: '#0B1220',

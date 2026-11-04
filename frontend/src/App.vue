@@ -30,10 +30,17 @@ async function handleUnlock() {
 
 <template>
   <div class="min-h-[100dvh] bg-surface-page text-ink">
+    <!-- Opaque Fixed Top Safe-Area Shield for iOS 26/27 Standalone Status Bar -->
+    <div
+      v-if="store.authenticated && route.name !== 'login' && !pwa.locked"
+      class="ios-status-shield pointer-events-none fixed inset-x-0 top-0 z-30 bg-surface"
+      aria-hidden="true"
+    />
+
     <!-- Offline Status Pill -->
     <div
       v-if="!pwa.online"
-      class="pt-safe sticky top-0 z-[45] bg-warn px-4 py-1.5 text-center text-xs font-bold text-white"
+      class="app-bar-safe sticky top-0 z-[45] bg-warn px-4 py-1.5 text-center text-xs font-bold text-white"
       role="status"
     >
       Offline mode · Viewing cached subscription snapshot
@@ -128,7 +135,7 @@ async function handleUnlock() {
 
     <!-- Toast Notifications Stack -->
     <div
-      class="pointer-events-none fixed inset-x-0 top-[calc(env(safe-area-inset-top,0px)+0.75rem)] z-[90] flex flex-col items-center gap-2 px-4"
+      class="pointer-events-none fixed inset-x-0 top-[calc(env(safe-area-inset-top,0px)+1.75rem)] z-[90] flex flex-col items-center gap-2 px-4"
       aria-live="polite"
     >
       <div

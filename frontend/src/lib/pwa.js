@@ -141,6 +141,7 @@ export async function registerServiceWorker() {
     }
     swRegistration = reg
     pwa.swReady = true
+    reg.update().catch(() => {})
 
     if (reg.waiting) pwa.updateAvailable = true
     reg.addEventListener('updatefound', () => {

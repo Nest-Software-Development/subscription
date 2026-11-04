@@ -63,7 +63,6 @@
     @apply bg-surface-page font-sans text-ink antialiased;
     min-height: 100dvh;
     margin: 0;
-    overflow-x: clip;
     font-size: 0.9375rem;
     line-height: 1.45;
   }
@@ -99,9 +98,38 @@
    ========================================================================== */
 .app-bar,
 .glass-nav {
-  background: rgb(var(--surface) / 0.88);
-  -webkit-backdrop-filter: saturate(180%) blur(18px);
-  backdrop-filter: saturate(180%) blur(18px);
+  background-color: rgb(var(--surface));
+}
+
+.app-bar-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.ios-status-shield {
+  height: env(safe-area-inset-top, 0px);
+}
+
+/* iOS 26/27 standalone Home Screen PWAs enforce a system progressive blur band
+   extending ~24pt below env(safe-area-inset-top). Keeping a 100% opaque surface
+   backdrop across that band (blurring white-on-white / dark-on-dark) and placing
+   the header row below it eliminates all visible blur on icons, titles, and actions. */
+@supports (-webkit-touch-callout: none) {
+  @media (display-mode: standalone), (display-mode: fullscreen) {
+    .app-bar-safe {
+      padding-top: calc(env(safe-area-inset-top, 0px) + 24px);
+    }
+    .ios-status-shield {
+      height: calc(env(safe-area-inset-top, 0px) + 24px);
+    }
+  }
+}
+
+html[data-os='ios'][data-standalone='true'] .app-bar-safe {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 24px);
+}
+
+html[data-os='ios'][data-standalone='true'] .ios-status-shield {
+  height: calc(env(safe-area-inset-top, 0px) + 24px);
 }
 
 .glass-tabbar {

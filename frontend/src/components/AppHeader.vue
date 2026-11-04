@@ -40,10 +40,10 @@ function onBellTap() {
 
 <template>
   <header
-    class="app-bar pt-safe sticky top-0 z-30"
+    class="app-bar app-bar-safe sticky top-0 z-30"
     :class="flat ? '' : 'border-b border-line/60'"
   >
-    <div class="mx-auto flex min-h-[62px] max-w-5xl items-center justify-between gap-2 px-4 py-2">
+    <div class="mx-auto flex min-h-[54px] max-w-5xl items-center justify-between gap-2 px-4 py-1.5">
       <!-- Left: Back button on detail screens OR Brand + Title on root tabs -->
       <div class="flex min-w-0 items-center gap-2.5">
         <button

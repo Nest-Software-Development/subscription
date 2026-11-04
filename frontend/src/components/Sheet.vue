@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
         role="dialog"
         aria-modal="true"
         :aria-label="title || 'Sheet'"
-        class="sheet-panel fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[92dvh] w-full flex-col rounded-t-[1.75rem] border-t border-line bg-surface shadow-sheet sm:bottom-4 sm:rounded-[1.75rem] sm:border"
+        class="sheet-panel fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[calc(100dvh-env(safe-area-inset-top,0px)-2rem)] w-full flex-col rounded-t-[1.75rem] border-t border-line bg-surface shadow-sheet sm:bottom-4 sm:rounded-[1.75rem] sm:border"
         :class="[maxWidth, { 'is-dragging': dragging }]"
         :style="dragY > 0 ? { transform: `translateY(${dragY}px)` } : undefined"
       >

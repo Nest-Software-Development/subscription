@@ -9,7 +9,7 @@ import { registerRoute } from 'workbox-routing'
 import { StaleWhileRevalidate } from 'workbox-strategies'
 
 const APP = '/subscriptions'
-const SHELL_CACHE = 'subscription-shell-v1'
+const SHELL_CACHE = 'subscription-shell-v2'
 const SHELL_KEY = '/subscriptions/__shell__'
 const ICON = '/assets/subscription/manifest/icon-192.png'
 const BADGE = '/assets/subscription/manifest/badge-96.png'
@@ -64,6 +64,18 @@ self.addEventListener('message', (event) => {
   if (event.data?.type === 'SKIP_WAITING') self.skipWaiting()
 })
 clientsClaim()
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((k) => k.startsWith('subscription-shell-') && k !== SHELL_CACHE)
+          .map((k) => caches.delete(k)),
+      ),
+    ),
+  )
+})
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
